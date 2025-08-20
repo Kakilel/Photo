@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-3">Category: {{ category.name }}</h2>
+    <p class="text-muted">{{ category.description }}</p>
+
+    <div class="row">
+        {% for photo in photos %}
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm">
+                <img src="{{ photo.image.url }}" class="card-img-top" alt="{{ photo.title }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ photo.title }}</h5>
+                    <p class="card-text text-muted">{{ photo.description|truncatewords:15 }}</p>
+                    
+                    <!-- Like & Comment counts -->
+                    <p>
+                        ❤️ {{ photo.total_likes }} Likes |
+                        💬 {{ photo.comments.count }} Comments
+                    </p>
+
+                    <!-- Actions -->
+                    <a href="{% url 'photo_detail' photo.id %}" class="btn btn-sm btn-primary">View</a>
+                    <a href="{% url 'profile' photo.user.username %}" class="btn btn-sm btn-outline-secondary">By {{ photo.user.username }}</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p>No photos in this category yet.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

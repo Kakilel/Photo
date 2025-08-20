@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto bg-white rounded-xl shadow p-6 mt-8">
+  <h2 class="text-2xl font-semibold mb-4">Create an Account</h2>
+
+  <!-- Django messages -->
+  {% if messages %}
+    <div class="mb-4">
+      {% for message in messages %}
+        <div class="p-3 rounded-lg text-sm 
+                    {% if message.tags == 'error' %}
+                      bg-red-100 text-red-700
+                    {% elif message.tags == 'success' %}
+                      bg-green-100 text-green-700
+                    {% else %}
+                      bg-gray-100 text-gray-700
+                    {% endif %}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- Registration Form -->
+  <form method="POST" novalidate class="space-y-4">
+    {% csrf_token %}
+
+    <!-- Username -->
+    <div>
+      <label for="id_username" class="block text-sm font-medium">Username</label>
+      <input type="text" name="username" id="id_username"
+             value="{{ form.username.value|default:'' }}"
+             class="w-full mt-1 px-3 py-2 border rounded-lg focus:ring focus:ring-black/20">
+      {% if form.username.errors %}
+        <p class="text-red-600 text-sm mt-1">{{ form.username.errors }}</p>
+      {% endif %}
+    </div>
+
+    <!-- Email -->
+    <div>
+      <label for="id_email" class="block text-sm font-medium">Email</label>
+      <input type="email" name="email" id="id_email"
+             value="{{ form.email.value|default:'' }}"
+             class="w-full mt-1 px-3 py-2 border rounded-lg focus:ring focus:ring-black/20">
+      {% if form.email.errors %}
+        <p class="text-red-600 text-sm mt-1">{{ form.email.errors }}</p>
+      {% endif %}
+    </div>
+
+    <!-- Password -->
+    <div>
+      <label for="id_password1" class="block text-sm font-medium">Password</label>
+      <input type="password" name="password1" id="id_password1"
+             class="w-full mt-1 px-3 py-2 border rounded-lg focus:ring focus:ring-black/20">
+      {% if form.password1.errors %}
+        <p class="text-red-600 text-sm mt-1">{{ form.password1.errors }}</p>
+      {% endif %}
+    </div>
+
+    <!-- Confirm Password -->
+    <div>
+      <label for="id_password2" class="block text-sm font-medium">Confirm Password</label>
+      <input type="password" name="password2" id="id_password2"
+             class="w-full mt-1 px-3 py-2 border rounded-lg focus:ring focus:ring-black/20">
+      {% if form.password2.errors %}
+        <p class="text-red-600 text-sm mt-1">{{ form.password2.errors }}</p>
+      {% endif %}
+    </div>
+
+    <!-- Submit -->
+    <button type="submit"
+            class="w-full bg-black text-white py-2 rounded-lg hover:bg-gray-800 transition">
+      Register
+    </button>
+  </form>
+
+  <p class="mt-4 text-center text-sm">
+    Already have an account?
+    <a href="{% url 'login' %}" class="text-black underline">Login here</a>
+  </p>
+</div>
+{% endblock %}

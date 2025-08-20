@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="bg-white rounded-xl shadow overflow-hidden">
+    <!-- Photo -->
+    <img src="{{ photo.image.url }}" alt="{{ photo.title }}" class="w-full max-h-[70vh] object-contain bg-black">
+    <div class="p-4">
+      <h1 class="text-2xl font-bold">{{ photo.title }}</h1>
+      {% if photo.description %}
+        <p class="mt-2">{{ photo.description }}</p>
+      {% endif %}
+      <p class="text-sm text-gray-500 mt-2">
+        Uploaded by @{{ photo.user.username }} on {{ photo.created_at|date:"M d, Y" }}
+      </p>
+    </div>
+  </div>
+
+  <!-- Likes -->
+  <div class="flex items-center gap-3 mt-4">
+    <form method="post" action="{% url 'like_photo' photo.id %}">
+      {% csrf_token %}
+      {% if user in photo.likes.all %}
+        <button type="submit" class="px-4 py-2 bg-red-500 text-white rounded-md">Unlike</button>
+      {% else %}
+        <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-md">Like</button>
+      {% endif %}
+    </form>
+    <span class="text-gray-600">{{ photo.likes.count }} like{{ photo.likes.count|pluralize }}</span>
+  </div>
+
+  <!-- Comments -->
+  <div class="mt-6">
+    <h2 class="text-xl font-semibold mb-2">Comments</h2>
+    {% if photo.comments.all %}
+      <ul class="space-y-2">
+        {% for comment in photo.comments.all %}
+          <li class="border-b pb-2">
+            <p class="text-gray-800"><strong>@{{ comment.user.username }}</strong>: {{ comment.text }}</p>
+            <p class="text-xs text-gray-500">{{ comment.created_at|date:"M d, Y H:i" }}</p>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="text-gray-500">No comments yet. Be the first to comment!</p>
+    {% endif %}
+  </div>
+
+  <!-- Comment Form -->
+  {% if user.is_authenticated %}
+    <div class="mt-4">
+      <form method="post" action="{% url 'add_comment' photo.id %}">
+        {% csrf_token %}
+        <textarea name="text" rows="3" placeholder="Write a comment..." class="w-full border rounded-md p-2"></textarea>
+        <button type="submit" class="mt-2 px-4 py-2 bg-green-600 text-white rounded-md">Post Comment</button>
+      </form>
+    </div>
+  {% else %}
+    <p class="mt-4 text-gray-500">You must <a href="{% url 'login' %}" class="text-blue-600 underline">login</a> to comment.</p>
+  {% endif %}
+{% endblock %}
